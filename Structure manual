@@ -1,0 +1,301 @@
+Great! Here’s your **complete, polished manual** — ready to drop into your project as `README.md` or documentation.
+
+It includes:
+
+✅ Contents ✅ Project structure ✅ Classification rules ✅ Naming conventions ✅ Commenting and function tracking ✅ Best practices ✅ Examples ✅ Glossary
+
+---
+
+# 📖 Bitburner DDD + FP Project Manual & Template
+
+---
+
+## 📚 Contents
+
+1. [Introduction](#introduction)
+2. [Project Structure](#project-structure)
+3. [Classification Guide](#classification-guide)
+4. [Naming Conventions](#naming-conventions)
+5. [Folder & File Template](#folder--file-template)
+6. [Naming Guidelines](#naming-guidelines)
+7. [Commenting & Function Tracking](#commenting--function-tracking)
+8. [Best Practices](#best-practices)
+9. [Examples](#examples)
+10. [Glossary](#glossary)
+
+---
+
+## 🔰 Introduction
+
+This manual helps you structure Bitburner scripts using a **Domain-Driven Design (DDD)** + **Functional Programming (FP)** hybrid architecture.
+
+It provides folder layout, classification rules, naming conventions, commenting guidelines, best practices, and example code to keep your project clean, maintainable, and efficient.
+
+---
+
+## 🏗️ Project Structure
+
+```
+/src
+  ├── app/         → Application layer (orchestration, workflows)
+  ├── domain/      → Domain layer (pure business logic, models)
+  ├── infra/       → Infrastructure layer (ns API, filesystem, external deps)
+  ├── shared/      → Shared utilities (types, helpers, constants)
+  ├── tests/       → ✅ Test scripts for all layers
+  └── main.js      → Entry point
+
+```
+
+📁 /src This is your main source code folder — all your project code lives here.
+
+Inside it, we divide things into four layers:
+
+1️⃣ /src/app/ → Application layer What it does: Orchestrates workflows and coordinates tasks between domain + infrastructure.
+
+Example role:
+
+Calls domain functions to plan hacks.
+
+Uses infra functions to interact with the Bitburner ns API.
+
+Controls the overall hacking flow.
+
+Example file: HackOrchestrator.js → runs the full hack cycle.
+
+2️⃣ /src/domain/ → Domain layer What it does: Holds your core business logic — pure functions and models that don’t rely on external stuff like ns or the filesystem.
+
+Why important: It’s testable, reusable, and independent of Bitburner APIs.
+
+Example file: HackPlanner.js → plans which servers to hack and how.
+
+3️⃣ /src/infra/ → Infrastructure layer What it does: Handles interactions with external dependencies:
+
+Bitburner’s ns API
+
+the filesystem
+
+network or hardware
+
+Why important: It isolates side effects so your domain logic stays clean.
+
+Example file: NsServerScanner.js → scans servers using ns.scan().
+
+4️⃣ /src/shared/ → Shared utilities What it does: Holds general-purpose helpers, types, constants, or utilities that are reused across multiple layers.
+
+Why important: Prevents duplicating helpers in multiple places.
+
+Example file: LoggerUtil.js → formats log messages; Constants.js → stores project-wide constants.
+
+5️⃣ main.js → Entry point What it does: This is the script you run in Bitburner (run main.js) — it typically loads the app layer or kicks off the main workflow.
+
+📊 Visual Summary Folder Responsibility Examples app/ Orchestration, workflow control HackOrchestrator.js domain/ Pure logic, core calculations HackPlanner.js, ServerAnalyzer.js infra/ External API / ns / filesystem interaction NsServerScanner.js shared/ Common utilities, constants, types LoggerUtil.js, Constants.js main.js Top-level entry script Boots up everything
+
+✅ Why this structure helps Keeps your pure logic separate from messy APIs.
+
+Makes it easier to test core logic without ns.
+
+Helps you scale projects as they grow.
+
+Encourages modular, maintainable code.
+
+---
+
+## ⚖️ Classification Guide
+
+| Layer          | Description                                | Questions to Ask                 |
+| -------------- | ------------------------------------------ | -------------------------------- |
+| Domain         | Pure logic, no side effects                | Works without ns? Pure function? |
+| Application    | Orchestration, coordinates domain + infra  | Does it manage flow?             |
+| Infrastructure | Talks to ns, filesystem, hardware, network | Does it depend on external APIs? |
+| Shared         | General utilities, types, constants        | Is it reusable across layers?    |
+
+---
+
+## 🏷️ Naming Conventions
+
+| Layer          | Example Files                         |
+| -------------- | ------------------------------------- |
+| Domain         | `ServerAnalyzer.js`, `HackPlanner.js` |
+| Application    | `HackOrchestrator.js`                 |
+| Infrastructure | `NsServerScanner.js`                  |
+| Shared         | `LoggerUtil.js`, `TypeDefs.js`        |
+
+---
+
+## 🗂️ Folder & File Template
+
+```
+/src
+├── app/
+│   └── HackOrchestrator.js
+├── domain/
+│   ├── ServerAnalyzer.js
+│   └── HackPlanner.js
+├── infra/
+│   └── NsServerScanner.js
+├── shared/
+│   ├── LoggerUtil.js
+│   └── TypeDefs.js
+└── main.js
+```
+
+---
+
+## 📝 Naming Guidelines
+
+| Item     | Style                                 | Example                          |
+| -------- | ------------------------------------- | -------------------------------- |
+| Function | camelCase + verb                      | `calculateHackChance()`          |
+| Class    | PascalCase + noun                     | `ServerInfo`                     |
+| File     | PascalCase, match export              | `HackPlanner.js` → `planHacks()` |
+| Variable | camelCase or UPPER_SNAKE_CASE (const) | `maxThreads`, `DEFAULT_DELAY`    |
+
+- **Functions** → verbs: `scanServers()`, `planHacks()`
+- **Classes** → nouns: `ServerInfo`, `HackPlan`
+- **Files** → match export name, PascalCase
+- **Variables** → meaningful names, camelCase; constants in UPPER_SNAKE_CASE
+
+---
+
+## 🗨️ Commenting & Function Tracking
+
+### 📌 When to Use Comments
+
+✅ Top of each file → explain its purpose ✅ Above complex functions → what it does, why it matters ✅ Inside tricky logic → why (not what) ✅ Mark deprecated, TODO, or improvements:
+
+```js
+// TODO: Optimize for batch hacking
+// DEPRECATED: Use scanAllServers() in shared/NetworkUtil.js
+```
+
+---
+
+### 📊 Tracking Function Usage
+
+✅ **Mark deprecated code** with comments ✅ **Search for usage** using editor tools or `grep` / `ripgrep` ✅ **Maintain a functions map** in `/docs/functions.md`:
+
+```
+| Function            | Purpose                | Status       |
+|---------------------|------------------------|--------------|
+| planHacks()         | Plan hacking targets   | Active       |
+| scanServers()       | Scan all servers       | Replaced     |
+```
+
+✅ **Use ESLint or editor warnings** to detect unused code
+
+---
+
+## 🌟 Best Practices
+
+### 🧩 1. Keep domain logic pure
+
+No side effects, no ns calls → testable, reusable.
+
+### ⚡ 2. Minimize global state
+
+Pass data explicitly, avoid hidden dependencies.
+
+### 🚀 3. Keep scripts small and focused
+
+Do one thing well → split big flows into smaller modules.
+
+### 🔄 4. Favor composition over duplication
+
+Build big flows from small, reusable functions.
+
+### 📂 5. Keep folders and files organized
+
+Stick to app/domain/infra/shared; no dumping in root.
+
+### 📑 6. Document important decisions
+
+Use file-level comments and maintain `/docs`.
+
+### 🛡️ 7. Write defensive code
+
+Handle empty arrays, nulls, unexpected inputs.
+
+### 🧪 8. Test pure functions
+
+Write small test scripts or assertions for domain logic.
+
+### 🧹 9. Regularly clean up unused code
+
+Mark deprecated code, clean up dead code.
+
+### ⚙️ 10. Optimize for RAM (Bitburner-specific)
+
+Separate high-RAM functions; use `ns.exec()` when needed.
+
+---
+
+## 💡 Examples
+
+### app/HackOrchestrator.js
+
+```js
+import { planHacks } from '/src/domain/HackPlanner.js';
+import { scanServers } from '/src/infra/NsServerScanner.js';
+
+export async function runHackFlow(ns) {
+  const servers = scanServers(ns);
+  const plans = planHacks(servers);
+  for (const plan of plans) {
+    await ns.hack(plan.target);
+  }
+}
+```
+
+---
+
+### domain/HackPlanner.js
+
+```js
+/**
+ * Plans hacking targets based on server info.
+ * @param {ServerInfo[]} servers
+ * @returns {HackPlan[]}
+ */
+export function planHacks(servers) {
+  return servers.filter((s) => s.moneyMax > 0).map((s) => ({ target: s.hostname, threads: 10 }));
+}
+```
+
+---
+
+### shared/LoggerUtil.js
+
+```js
+export function logMessage(ns, message) {
+  ns.tprint(`[LOG] ${message}`);
+}
+```
+
+---
+
+## 📖 Glossary
+
+| Term          | Meaning                                             |
+| ------------- | --------------------------------------------------- |
+| DDD           | Domain-Driven Design → business logic centered      |
+| FP            | Functional Programming → pure, composable functions |
+| Pure Function | Same output for same input, no side effects         |
+| ns            | Bitburner’s Netscript API object                    |
+| DEPRECATED    | Marked as outdated, to be removed                   |
+| TODO          | Work or improvements to be done later               |
+
+---
+
+## ✅ Summary Checklist
+
+✅ Use app/domain/infra/shared folders ✅ Classify code with the guide ✅ Name functions, files, and variables consistently ✅ Write useful, minimal comments ✅ Track deprecated/unused functions ✅ Follow best practices ✅ Optimize for Bitburner’s RAM constraints
+
+---
+
+### 📦 Bonus Tools (optional)
+
+- `/docs/functions.md` → track active, deprecated, or replaced functions
+- `.eslintrc.js` → enable linting for unused code, bad practices
+- `README.md` → summarize project purpose, architecture, and setup
+
+---

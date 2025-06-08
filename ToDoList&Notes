@@ -1,0 +1,41 @@
+- early game money maker
+- hacknet script
+- darknet buyer script. try and make it so it only buys programs when they are needed
+- server batch hacking script
+- system for queuing purchase requests using ports
+- system for queuing augmentations then adding them to purchase request queue
+
+- script to show the multipliers of the current bitnode.
+  - catagorise the different multis into apropriate groups.
+
+!!! Bitbode multiplier catagories. !!!
+
+physical attributes [AgilityLevelMultiplier:, DefenseLevelMultiplier:, StrengthLevelMultiplier:, CharismaLevelMultiplier:, DexterityLevelMultiplier:]
+
+faction rep [AugmentationRepCost:, FactionPassiveRepGain:, RepToDonateToFaction:, AugmentationMoneyCost:, FactionWorkExpGain:, FactionWorkRepGain:]
+
+gym and study exp [ClassGymExpGain:]
+
+company work [CompanyWorkExpGain:, CompanyWorkRepGain:, CompanyWorkMoney:]
+
+crime [CrimeExpGain:, CrimeSuccessRate:, CrimeMoney:]
+
+hacking [HackExpGain:, HackingSpeedMultiplier:, ScriptHackMoneyGain:, ServerMaxMoney:, ServerStartingSecurity:, HackingLevelMultiplier:, ScriptHackMoney:, ServerGrowthRate:, ServerStartingMoney:, ServerWeakenRate:]
+
+purchased servers [PurchasedServerLimit:, PurchasedServerCost:, PurchasedServerSoftcap:, PurchasedServerMaxRam:]
+
+home computer [HomeComputerRamCost:]
+
+hacknet Nodes [HacknetNodeMoney:]
+
+// Unused attributes atm. //
+
+bladeburner [BladeburnerSkillCost:, BladeburnerRank:]
+
+corporations [CorporationSoftcap:, CorporationDivisions:, CorporationValuation:]
+
+gang [GangUniqueAugs:, GangSoftcap:]
+
+stock market [FourSigmaMarketDataCost:, FourSigmaMarketDataApiCost:]
+
+unknown [StaneksGiftExtraSize:, CodingContractMoney:, DaedalusAugsRequirement:, GoPower:, InfiltrationMoney:, InfiltrationRep:, ManualHackMoney:, StaneksGiftPowerMultiplier:, WorldDaemonDifficulty:]
