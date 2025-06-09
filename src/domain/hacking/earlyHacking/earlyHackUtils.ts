@@ -1,9 +1,5 @@
-import { colourNumbersAndLetters } from '@/shared/stringUtils';
-import { getCurrentTimeInSeconds } from '@/shared/timeUtils';
 import { fileExists } from '@/shared/validationUtils';
 import { NS, Server } from '@ns';
-import { realpath } from 'fs';
-import { externalRE } from 'viteburner';
 
 export function recordServerHGWStats(ns: NS, server: string, increment: number) {
   const maxExtractionPercent = 0.75;
