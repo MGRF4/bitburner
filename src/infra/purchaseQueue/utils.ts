@@ -67,7 +67,7 @@ export async function addPurchaseToQueue(
  */
 export async function executeNextPurchaseInQueue(ns: NS) {
   // Wait until no purchases are being requested.
-  while (fileExists(ns, '/SystemDataStorage/PurchaseRequestLock.txt', 'home')) {
+  while (fileExists(ns, '/data/locks/PurchaseRequestLock.txt', 'home')) {
     await ns.sleep(10);
   }
   // Check if there are any entries in the queue.
@@ -141,15 +141,15 @@ export async function removeFirstPurchaseFromQueue(ns: NS) {
  *
  */
 export function lockPurchaseRequest(ns: NS) {
-  ns.write('/SystemDataStorage/PurchaseRequestLock.txt', 'lock', 'w');
+  ns.write('/data/locks/PurchaseRequestLock.txt', 'lock', 'w');
 }
 
 /*
  *
  */
 export function unlockPurchaseRequest(ns: NS) {
-  if (fileExists(ns, '/SystemDataStorage/PurchaseRequestLock.txt', 'home')) {
-    ns.rm('/SystemDataStorage/PurchaseRequestLock.txt', 'home');
+  if (fileExists(ns, '/data/locks/PurchaseRequestLock.txt', 'home')) {
+    ns.rm('/data/locks/PurchaseRequestLock.txt', 'home');
   }
 }
 
@@ -157,7 +157,7 @@ export function unlockPurchaseRequest(ns: NS) {
  *
  */
 export async function waitForPurchaseRequestUnlock(ns: NS) {
-  const file = '/SystemDataStorage/PurchaseRequestLock.txt';
+  const file = '/data/locks/PurchaseRequestLock.txt';
   while (fileExists(ns, file, 'home')) {
     await ns.sleep(10);
   }
@@ -165,6 +165,6 @@ export async function waitForPurchaseRequestUnlock(ns: NS) {
 }
 
 export function checkPurchaseRequestLock(ns: NS) {
-  const file = '/SystemDataStorage/PurchaseRequestLock.txt';
+  const file = '/data/locks/PurchaseRequestLock.txt';
   return fileExists(ns, file, 'home');
 }

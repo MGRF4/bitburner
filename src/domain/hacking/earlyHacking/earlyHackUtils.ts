@@ -1,71 +1,78 @@
 import { fileExists } from '@/shared/validationUtils';
 import { NS, Server } from '@ns';
 
-export function recordServerHGWStats(ns: NS, server: string, increment: number) {
-  const maxExtractionPercent = 0.75;
-  let extractionPercent = increment;
-  let securityProjection = 0;
-  const serverMaxMoney = ns.getServerMaxMoney(server);
-
-  //while (extractionPercent < maxExtractionPercent) {
-  // Hack constants.
-  let hackThreads = ns.hackAnalyzeThreads(server, extractionPercent);
-  ns.print(hackThreads);
-  if (hackThreads < 1) hackThreads = 1;
-  securityProjection += ns.hackAnalyzeSecurity(hackThreads, server);
-  // Grow constants.
-  const remainingMoney = serverMaxMoney - ns.hackAnalyze(server) * hackThreads;
-  //let growThreads = ns.formulas.hacking.
-
-  extractionPercent += increment;
-  //}
-}
-
-export function recordServerHGWCalculationsUsingFormulas(ns: NS, increment: number, serverList: string[]) {
+export async function recordServerHGWCalculationsUsingFormulas(
+  ns: NS,
+  increment: number,
+  serverList: string[],
+): Promise<void> {
   const player = ns.getPlayer();
   const maxExtractionPercent = 0.75;
 
   for (const server of serverList) {
     let extractionPercent = increment;
-    let securityProjection = 0;
     const serverHGWData = [];
 
     const clone = createServerClone_perfectState(ns, server);
-    if (!clone.moneyMax) return;
+    if (!clone.moneyMax) clone.moneyMax = 0;
 
-    //while (extractionPercent < maxExtractionPercent) {
-    // Hack Calculations.
-    const singleHackThreadPercent = ns.formulas.hacking.hackPercent(clone, player);
-    let hackThreads = extractionPercent / singleHackThreadPercent;
-    if (hackThreads < 1) hackThreads = 1;
-    securityProjection += ns.hackAnalyzeSecurity(hackThreads, clone.hostname);
+    while (extractionPercent <= maxExtractionPercent) {
+      extractionPercent = Number(extractionPercent.toFixed(3));
+      let securityProjection = 0;
 
-    // Change clone money available.
-    const stolenFraction = singleHackThreadPercent * hackThreads;
-    const remainingMoney = clone.moneyMax * (1 - stolenFraction);
-    clone.moneyAvailable = remainingMoney;
+      // Hack Calculations.
+      const singleHackThreadPercent = ns.formulas.hacking.hackPercent(clone, player);
+      let hackThreads = Math.floor(extractionPercent / singleHackThreadPercent);
+      if (hackThreads < 1) hackThreads = 1;
+      securityProjection += ns.hackAnalyzeSecurity(hackThreads, clone.hostname);
 
-    // Grow Calculations.
-    let growThreads = ns.formulas.hacking.growThreads(clone, player, clone.moneyMax, clone.cpuCores);
-    securityProjection += ns.growthAnalyzeSecurity(growThreads, clone.hostname, clone.cpuCores);
+      // Change clone money available.
+      const stolenFraction = singleHackThreadPercent * hackThreads;
+      const remainingMoney = clone.moneyMax * (1 - stolenFraction);
+      clone.moneyAvailable = remainingMoney;
 
-    // Security Calculations.
-    let securityThreads = Math.ceil(securityProjection / ns.weakenAnalyze(1, clone.cpuCores));
+      // Grow Calculations.
+      let growThreads = ns.formulas.hacking.growThreads(clone, player, clone.moneyMax, clone.cpuCores);
+      securityProjection += ns.growthAnalyzeSecurity(growThreads, clone.hostname, clone.cpuCores);
 
-    // Calculate Ram needed for entire cycle.
-    const hackRam = ns.getScriptRam('/domain/hacking/hackServer.js', 'home');
-    const growRam = ns.getScriptRam('/domain/hacking/growServer.js', 'home');
-    const weakenRam = ns.getScriptRam('/domain/hacking/weakenServer.js', 'home');
+      // Security Calculations.
+      let securityThreads = Math.ceil(securityProjection / ns.weakenAnalyze(1, clone.cpuCores));
 
-    // Add info to serverHGWData.
-    serverHGWData.push({ extractionPercent: extractionPercent });
+      // Calculate Ram needed for entire cycle.
+      const hackRam = ns.getScriptRam('/domain/hacking/hackServer.js', 'home');
+      const growRam = ns.getScriptRam('/domain/hacking/growServer.js', 'home');
+      const weakenRam = ns.getScriptRam('/domain/hacking/weakenServer.js', 'home');
+      const hackRamTotal = hackRam * hackThreads;
+      const growRamTotal = growRam * growThreads;
+      const weakenRamTotal = weakenRam * securityThreads;
+      const totalRamNeeded = Math.ceil(hackRamTotal + growRamTotal + weakenRamTotal);
+      const serverRamRequired = calculateServerRamNeeded(ns, totalRamNeeded);
 
-    extractionPercent += increment;
-    //}
+      // Add info to serverHGWData.
+      serverHGWData.push({
+        extractionPercent: extractionPercent,
+        hackThreads: hackThreads,
+        growThreads: growThreads,
+        weakenThreads: securityThreads,
+        ramNeeded: totalRamNeeded,
+        serverRamNeeded: serverRamRequired,
+      });
+
+      extractionPercent += increment;
+    }
+    await safeWriteServerFile(ns, server, serverHGWData);
   }
 }
 
-function createServerClone_perfectState(ns: NS, server: string): Server {
+export function calculateServerRamNeeded(ns: NS, rawRam: number) {
+  const maxRam = ns.getPurchasedServerMaxRam();
+  for (let ram = 2; ram < maxRam + 1; ram = ram * 2) {
+    if (ram > rawRam) return ram;
+  }
+  return maxRam;
+}
+
+export function createServerClone_perfectState(ns: NS, server: string): Server {
   const s = ns.getServer(server);
 
   const serverClone: Server = {
@@ -115,37 +122,38 @@ function createServerClone_perfectState(ns: NS, server: string): Server {
 }
 
 export async function safeWriteServerFile(ns: NS, server: string, data: any[]) {
-  const file = '/SystemDataStorage/ServerData/' + server + '.txt';
+  const file = '/data/serverData/' + server + '.txt';
   await waitForUnlockServerFile(ns, server);
   lockServerFile(ns, server);
-  ns.write(file, data.toString(), 'w');
+  ns.write(file, JSON.stringify(data), 'w');
   unlockServerFile(ns, server);
 }
 
 export async function safeReadServerFile(ns: NS, server: string) {
-  const file = '/SystemDataStorage/ServerData/' + server + '.txt';
+  const file = '/data/serverData/' + server + '.txt';
   await waitForUnlockServerFile(ns, server);
   lockServerFile(ns, server);
-  const data = ns.read(file);
+  const data = JSON.parse(ns.read(file));
   unlockServerFile(ns, server);
+  return data;
 }
 
 async function waitForUnlockServerFile(ns: NS, server: string) {
-  const file = '/SystemDataStorage/ServerData/' + server + '.txt';
+  const file = '/data/locks/' + server + '.txt';
   while (fileExists(ns, file, 'home')) {
     await ns.sleep(10);
   }
 }
 
 function lockServerFile(ns: NS, server: string) {
-  const file = '/SystemDataStorage/ServerData/' + server + '.txt';
+  const file = '/data/locks/' + server + '.txt';
   if (!fileExists(ns, file, 'home')) {
     ns.write(file, 'lock', 'w');
   }
 }
 
 function unlockServerFile(ns: NS, server: string) {
-  const file = '/SystemDataStorage/ServerData/' + server + '.txt';
+  const file = '/data/locks/' + server + '.txt';
   if (fileExists(ns, file, 'home')) {
     ns.rm(file, 'home');
   }

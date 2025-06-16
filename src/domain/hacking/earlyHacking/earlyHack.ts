@@ -52,7 +52,6 @@ export async function main(ns: NS) {
           if (threads > 0) {
             pid = ns.exec(scripts[0], server, threads, optimalServer);
             if (pid > 0) wait = ns.getWeakenTime(optimalServer);
-            //else ns.print('Error');
           }
           break;
 

@@ -25,13 +25,13 @@ export function getOptimalHackingServer(ns: NS, serverList: string[]) {
 }
 
 export async function getOptimisedServerList(ns: NS) {
-  while (!fileExists(ns, '/SystemDataStorage/ServerListByH&M.txt', 'home')) {
+  while (!fileExists(ns, '/data/serverLists/ServerListByH&M.txt', 'home')) {
     await ns.sleep(10);
   }
-  if (!fileExists(ns, '/SystemDataStorage/ServerListByH&M.txt', 'home')) {
+  if (!fileExists(ns, '/data/serverLists/ServerListByH&M.txt', 'home')) {
     return [];
   } else {
-    return ns.read('/SystemDataStorage/ServerListByH&M.txt').split(',');
+    return ns.read('/data/serverLists/ServerListByH&M.txt').split(',');
   }
 }
 

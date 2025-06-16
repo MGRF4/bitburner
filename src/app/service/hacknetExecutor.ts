@@ -14,7 +14,7 @@ import { NS } from '@ns';
 export async function main(ns: NS) {
   await initialiseTailWindow(ns);
 
-  const file = '/SystemDataStorage/HacknetDatabaseLock.txt';
+  const file = '/data/locks/HacknetDatabaseLock.txt';
   if (fileExists(ns, file, 'home')) ns.rm(file, 'home');
 
   let nodeData = initialiseHacknetNodeData(ns);

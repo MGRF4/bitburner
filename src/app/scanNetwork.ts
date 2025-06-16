@@ -34,23 +34,23 @@ export async function main(ns: NS) {
   // Remove home from the list.
   serverList.splice(serverList.indexOf('home'), 1);
   // Write the original server list to file.
-  ns.write('/SystemDataStorage/RawNativeServerList.txt', serverList.toString(), 'w');
+  ns.write('/data/serverLists/RawNativeServerList.txt', serverList.toString(), 'w');
 
   // Delete servers that dont have RAM, are hacknet or purchased servers.
   serverListRam = serverList.filter((server) => ns.getServerMaxRam(server) > 0);
   serverListRam.filter((item) => !item.includes('hacknet'));
   //serverListRam = serverListRam.filter((item) => !item.includes('pServ'));
-  ns.write('/SystemDataStorage/HaveRamServerList.txt', serverListRam.toString(), 'w');
+  ns.write('/data/serverLists/HaveRamServerList.txt', serverListRam.toString(), 'w');
 
   // Order the original server list by their respective Hack level requirements.
   serverListByHackLevel = serverList.sort(
     (a, b) => ns.getServerRequiredHackingLevel(a) - ns.getServerRequiredHackingLevel(b),
   );
   // Write the list to a new file.
-  ns.write('/SystemDataStorage/HackLevelServerList.txt', serverListByHackLevel.toString(), 'w');
+  ns.write('/data/serverLists/HackLevelServerList.txt', serverListByHackLevel.toString(), 'w');
 
   // Optimize list by removing any servers that have no max money.
   serverListByHackLevelMaxMoney = serverListByHackLevel.filter((server) => ns.getServerMaxMoney(server) > 0);
   // Write new list to a new file.
-  ns.write('/SystemDataStorage/ServerListByH&M.txt', serverListByHackLevelMaxMoney.toString(), 'w');
+  ns.write('/data/serverLists/ServerListByH&M.txt', serverListByHackLevelMaxMoney.toString(), 'w');
 }

@@ -203,7 +203,7 @@ export async function waitForScriptCompletion(ns: NS, pid: number) {
  */
 export function lockScriptExecution(ns: NS, pid: number) {
   if (ns.isRunning(pid)) {
-    ns.write('/SystemDataStorage/ScriptExecutionLock.txt', pid.toString(), 'w');
+    ns.write('/data/locks/ScriptExecutionLock.txt', pid.toString(), 'w');
   }
 }
 
@@ -211,10 +211,10 @@ export function lockScriptExecution(ns: NS, pid: number) {
  *
  */
 export function unlockScriptExecution(ns: NS) {
-  if (fileExists(ns, '/SystemDataStorage/ScriptExecutionLock.txt', 'home')) {
-    const pid = Number(ns.read('/SystemDataStorage/ScriptExecutionLock.txt'));
+  if (fileExists(ns, '/data/locks/ScriptExecutionLock.txt', 'home')) {
+    const pid = Number(ns.read('/data/locks/ScriptExecutionLock.txt'));
     if (!ns.isRunning(pid)) {
-      ns.rm('/SystemDataStorage/ScriptExecutionLock.txt');
+      ns.rm('/data/locks/ScriptExecutionLock.txt');
     }
   }
 }

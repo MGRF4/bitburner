@@ -45,7 +45,7 @@ export async function initialisePorts(ns: NS) {
  *
  */
 export function lockPort(ns: NS, portNumber: number): boolean {
-  const lockFile = '/SystemDataStorage/Port-' + portNumber + '-Lock.txt';
+  const lockFile = '/data/locks/Port-' + portNumber + '-Lock.txt';
   if (ns.fileExists(lockFile, 'home')) return false;
   ns.write(lockFile, 'locked', 'w');
   return true;
@@ -55,7 +55,7 @@ export function lockPort(ns: NS, portNumber: number): boolean {
  *
  */
 export function unlockPort(ns: NS, portNumber: number): void {
-  const lockFile = '/SystemDataStorage/Port-' + portNumber + '-Lock.txt';
+  const lockFile = '/data/locks/Port-' + portNumber + '-Lock.txt';
   if (ns.fileExists(lockFile, 'home')) {
     ns.rm(lockFile);
   }
@@ -65,7 +65,7 @@ export function unlockPort(ns: NS, portNumber: number): void {
  *
  */
 export async function waitForPortUnlock(ns: NS, portNumber: number): Promise<void> {
-  const lockFile = '/SystemDataStorage/Port-' + portNumber + '-Lock.txt';
+  const lockFile = '/data/locks/Port-' + portNumber + '-Lock.txt';
   while (ns.fileExists(lockFile, 'home')) {
     await ns.sleep(50);
   }
@@ -75,7 +75,7 @@ export async function waitForPortUnlock(ns: NS, portNumber: number): Promise<voi
  *
  */
 export async function writePortSafely(ns: NS, portNumber: number, data: any): Promise<void> {
-  const lockFile = '/SystemDataStorage/Port-' + portNumber + '-Lock.txt';
+  const lockFile = '/data/locks/Port-' + portNumber + '-Lock.txt';
   await waitForPortUnlock(ns, portNumber);
 
   lockPort(ns, portNumber);
@@ -89,7 +89,7 @@ export async function writePortSafely(ns: NS, portNumber: number, data: any): Pr
  *
  */
 export async function readPortSafely(ns: NS, portNumber: number): Promise<any> {
-  const lockFile = '/SystemDataStorage/Port-' + portNumber + '-Lock.txt';
+  const lockFile = '/data/locks/Port-' + portNumber + '-Lock.txt';
   await waitForPortUnlock(ns, portNumber);
 
   lockPort(ns, portNumber);
@@ -105,7 +105,7 @@ export async function readPortSafely(ns: NS, portNumber: number): Promise<any> {
  *
  */
 export async function clearPortSafely(ns: NS, portNumber: number): Promise<void> {
-  const lockFile = '/SystemDataStorage/Port-' + portNumber + '-Lock.txt';
+  const lockFile = '/data/locks/Port-' + portNumber + '-Lock.txt';
   await waitForPortUnlock(ns, portNumber);
 
   lockPort(ns, portNumber);

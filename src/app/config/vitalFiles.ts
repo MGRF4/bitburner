@@ -18,7 +18,7 @@ export async function main(ns: NS) {
   ns.disableLog('ALL');
   ns.clearLog();
 
-  const storageFolder = '/SystemDataStorage/';
+  const storageFolder = '/data/';
   let file: string;
   let checkMessage: string;
 

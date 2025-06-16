@@ -42,7 +42,7 @@ export function isValidString(input: any) {
 }
 
 export function verifyVitalFiles(ns: NS) {
-  const path = '/SystemDataStorage/';
+  const path = '/data/';
   const vitalFileList = [
     'MaxHack%Amount.txt',
     'Hack%Increment.txt',
@@ -55,7 +55,7 @@ export function verifyVitalFiles(ns: NS) {
       return ns.print(
         `ERROR ${
           path + vitalFileList
-        } does not exist, sugest running app/configConfigWizard.js or app/config/configColourPalette.js`,
+        } does not exist, sugest running app/config/ConfigWizard.js or app/config/configColourPalette.js`,
       );
   }
 }

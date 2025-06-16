@@ -32,7 +32,7 @@ export function getServerMaxRam(ns: NS, server: string) {
  */
 export function applyFreeRamPercentage(ns: NS, serverMaxRam: number) {
   if (serverMaxRam <= 0) return 0;
-  const multiplier = 1 - parseInt(ns.read('/SystemDataStorage/FreeRAM%.txt')) / 100;
+  const multiplier = 1 - parseInt(ns.read('/data/FreeRAM%.txt')) / 100;
   return serverMaxRam * multiplier;
 }
 

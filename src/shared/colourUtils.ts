@@ -95,7 +95,7 @@ export function printColourPalette(
  *
  */
 export function readColourPalette(ns: NS) {
-  const raw = ns.read('/SystemDataStorage/ColourPalette.txt');
+  const raw = ns.read('/data/ColourPalette.txt');
   const str = String(raw).trim();
   const numbers = str.length > 0 ? str.split(',').map((x) => Number(x.trim())) : [];
   return numbers as [number, number, number, number, number, number];

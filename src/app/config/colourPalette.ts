@@ -2,7 +2,7 @@ import { initialiseTailWindow } from '@/shared/tailUtils';
 import { NS } from '@ns';
 
 export async function main(ns: NS) {
-  const storageFolder = '/SystemDataStorage/';
+  const storageFolder = '/data/';
   const file = 'ColourPalette.txt';
 
   const labels = ['Title', 'Border', 'Label', 'Data', 'Critical', 'Shadow'];

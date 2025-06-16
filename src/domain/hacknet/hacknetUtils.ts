@@ -277,28 +277,28 @@ function convertToHashes(input: number) {
 }
 
 async function waitForHacknetDatabaseUnlock(ns: NS) {
-  const file = '/SystemDataStorage/HacknetDatabaseLock.txt';
+  const file = '/data/locks/HacknetDatabaseLock.txt';
   while (fileExists(ns, file, 'home')) {
     await ns.sleep(10);
   }
 }
 
 function lockHacknetDatabase(ns: NS) {
-  const file = '/SystemDataStorage/HacknetDatabaseLock.txt';
+  const file = '/data/locks/HacknetDatabaseLock.txt';
   if (!fileExists(ns, file, 'home')) {
     ns.write(file, 'lock', 'w');
   }
 }
 
 function unlockHacknetDatabase(ns: NS) {
-  const file = '/SystemDataStorage/HacknetDatabaseLock.txt';
+  const file = '/data/locks/HacknetDatabaseLock.txt';
   if (fileExists(ns, file, 'home')) {
     ns.rm(file, 'home');
   }
 }
 
 export async function safeWriteToHacknetDatabase(ns: NS, nodeData: HacknetNodeData[]) {
-  const file = '/SystemDataStorage/HacknetDatabase.txt';
+  const file = '/data/locks/HacknetDatabase.txt';
   await waitForHacknetDatabaseUnlock(ns);
   lockHacknetDatabase(ns);
   ns.write(file, JSON.stringify(nodeData), 'w');
@@ -306,7 +306,7 @@ export async function safeWriteToHacknetDatabase(ns: NS, nodeData: HacknetNodeDa
 }
 
 export async function safeGetHacknetDatabase(ns: NS) {
-  const file = '/SystemDataStorage/HacknetDatabase.txt';
+  const file = '/data/locks/HacknetDatabase.txt';
   await waitForHacknetDatabaseUnlock(ns);
   lockHacknetDatabase(ns);
   const raw = ns.read(file);
