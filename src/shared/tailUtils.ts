@@ -9,7 +9,6 @@ export async function initialiseTailWindow(ns: NS, title?: string) {
   ns.ui.setTailFontSize(10);
   ns.clearLog();
   await initialisePorts(ns);
-  verifyVitalFiles(ns);
 }
 
 export function resizeWindow(ns: NS, maxCharacterWidthSize: number, heightInPixels: number) {

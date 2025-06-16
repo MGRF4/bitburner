@@ -16,6 +16,7 @@ import {
 } from '@/shared/hackUtils';
 import { formatNumberTemplate, formatStringTemplate } from '@/shared/stringUtils';
 import { initialiseTailWindow } from '@/shared/tailUtils';
+import { fileExists } from '@/shared/validationUtils';
 import { NS } from '@ns';
 
 export async function main(ns: NS) {
@@ -33,6 +34,9 @@ export async function main(ns: NS) {
     ns.clearLog();
 
     const serverList = await getOptimisedServerList(ns);
+    if (fileExists(ns, '/data/serverLists/earlyHackBlacklist.txt', 'home')) {
+      // remove blacklisted servers from serverList.
+    }
     const optimalServer = getOptimalHackingServer(ns, serverList);
     if (!optimalServer) continue;
     const operation = decideHackGrowOrWeaken(ns, optimalServer);

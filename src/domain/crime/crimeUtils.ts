@@ -1,39 +1,37 @@
 import { crimes } from '@/shared/globalVariables';
-import { CrimeType, NS } from '@ns';
+import { NS, CrimeType } from '@ns';
 
-export function commitCrime(
-  ns: NS,
-  crimeChoice:
-    | 'Shoplift'
-    | 'Rob Store'
-    | 'Mug'
-    | 'Larceny'
-    | 'Deal Drugs'
-    | 'Bond Forgery'
-    | 'Traffick Arms'
-    | 'Homicide'
-    | 'Grand Theft Auto'
-    | 'Kidnap'
-    | 'Assassination'
-    | 'Heist',
-) {
-  ns.singularity.commitCrime(crimeChoice, false);
+export function commitCrime(ns: NS, crimeChoice: string) {
+  ns.singularity.commitCrime(crimeChoice as CrimeType, false);
 }
 
-export function getOptimalCrime(ns: NS): CrimeType {
-  let bestCrime: CrimeType = crimes[0];
+export function getOptimalCrime(ns: NS) {
+  const crimes = [
+    'Shoplift',
+    'Rob Store',
+    'Mug',
+    'Larceny',
+    'Deal Drugs',
+    'Bond Forgery',
+    'Traffick Arms',
+    'Homicide',
+    'Grand Theft Auto',
+    'Kidnap',
+    'Assassination',
+    'Heist',
+  ];
+  let bestCrime = crimes[0];
   let bestValue = 0;
-
   for (let crime of crimes) {
-    const stats = ns.singularity.getCrimeStats(crime);
-    const chance = ns.singularity.getCrimeChance(crime);
-    const expectedReward = stats.money * chance;
-    const value = expectedReward / stats.time;
-
+    const c = crime as CrimeType;
+    const stats = ns.singularity.getCrimeStats(c);
+    const chance = ns.singularity.getCrimeChance(c);
+    const reward = stats.money * chance;
+    const value = reward / stats.time;
     if (value > bestValue) {
       bestValue = value;
       bestCrime = crime;
     }
   }
-  return bestCrime as CrimeType;
+  return bestCrime;
 }
