@@ -66,10 +66,6 @@ export async function addPurchaseToQueue(
  *
  */
 export async function executeNextPurchaseInQueue(ns: NS) {
-  // Wait until no purchases are being requested.
-  while (fileExists(ns, '/data/locks/PurchaseRequestLock.txt', 'home')) {
-    await ns.sleep(10);
-  }
   // Check if there are any entries in the queue.
   if (!(await hasPortQueueEntries(ns, 3))) return;
   // Get data.
@@ -141,7 +137,7 @@ export async function removeFirstPurchaseFromQueue(ns: NS) {
  *
  */
 export function lockPurchaseRequest(ns: NS) {
-  ns.write('/data/locks/PurchaseRequestLock.txt', 'lock', 'w');
+  ns.write('/data/locks/PurchaseRequestLock.txt', ns.getScriptName(), 'w');
 }
 
 /*

@@ -1,6 +1,6 @@
 import { getOptimalCrime, commitCrime } from '@/domain/crime/crimeUtils';
 import { initialisePorts } from '@/infra/portUtils';
-import { initialiseTailWindow } from '@/shared/tailUtils';
+import { initialiseTailWindow, phaseCompletionSequence, repositionWindow, resizeWindow } from '@/shared/tailUtils';
 import { NS } from '@ns';
 
 /*
@@ -12,7 +12,10 @@ import { NS } from '@ns';
  */
 
 export async function main(ns: NS) {
-  await initialiseTailWindow(ns);
+  await initialiseTailWindow(ns, 'Phase1.0');
+
+  resizeWindow(ns, 30, 50);
+  repositionWindow(ns, 1700, 0);
 
   // Clear and initialise ports.
   for (let i = 1; i < 20; i++) {
@@ -33,8 +36,5 @@ export async function main(ns: NS) {
     }
   }
 
-  ns.spawn('app/start/phase1/phase1.1.js', { threads: 1, spawnDelay: 0 });
-
-  // Start to make some money through crime.
-  //commitCrime(ns, getOptimalCrime(ns));
+  await phaseCompletionSequence(ns, 'Phase1.0 Complete', 1000, 'app/start/phase1/phase1.1.js');
 }

@@ -15,13 +15,15 @@ import {
   decideHackGrowOrWeaken,
 } from '@/shared/hackUtils';
 import { formatNumberTemplate, formatStringTemplate } from '@/shared/stringUtils';
-import { initialiseTailWindow } from '@/shared/tailUtils';
+import { initialiseTailWindow, repositionWindow, resizeWindow } from '@/shared/tailUtils';
 import { fileExists } from '@/shared/validationUtils';
 import { NS } from '@ns';
 
 export async function main(ns: NS) {
   await initialiseTailWindow(ns, 'earlyHack');
-  //ns.ui.openTail();
+
+  resizeWindow(ns, 40, 225);
+  repositionWindow(ns, 1640, 950);
 
   let pid = ns.run('/app/scanNetwork.js');
   while (ns.isRunning(pid)) await ns.sleep(10);

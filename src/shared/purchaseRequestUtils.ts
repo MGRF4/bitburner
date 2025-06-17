@@ -143,6 +143,7 @@ export async function purchaseRequest_hacknet(
       information.push(ns.getScriptName());
       break;
   }
+
   await addPurchaseToQueue(ns, priority, purchaseLine, information, 'hacknet', cost, cost * inflationAmount);
 }
 

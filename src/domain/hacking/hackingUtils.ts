@@ -15,6 +15,8 @@ export async function recordServerHGWCalculationsUsingFormulas(
 
     const clone = createServerClone_perfectState(ns, server);
     if (!clone.moneyMax) clone.moneyMax = 0;
+    if (!clone.moneyAvailable) ns.print(clone.hostname);
+    clone.moneyAvailable = clone.moneyMax;
 
     while (extractionPercent <= maxExtractionPercent) {
       extractionPercent = Number(extractionPercent.toFixed(3));
@@ -48,12 +50,22 @@ export async function recordServerHGWCalculationsUsingFormulas(
       const totalRamNeeded = Math.ceil(hackRamTotal + growRamTotal + weakenRamTotal);
       const serverRamRequired = calculateServerRamNeeded(ns, totalRamNeeded);
 
+      // Calculate money per second..
+      const moneyTaken = clone.moneyMax * (singleHackThreadPercent * hackThreads);
+      const hTime = ns.getHackTime(clone.hostname);
+      const gTime = ns.getGrowTime(clone.hostname);
+      const wTime = ns.getWeakenTime(clone.hostname);
+      const totalTime = hTime + gTime + wTime;
+      const rawMoneyPerTime = moneyTaken / totalTime;
+      const moneyPerSecond = Math.round(rawMoneyPerTime * 10000);
+
       // Add info to serverHGWData.
       serverHGWData.push({
         extractionPercent: extractionPercent,
         hackThreads: hackThreads,
         growThreads: growThreads,
         weakenThreads: securityThreads,
+        moneyPerSecond: moneyPerSecond,
         ramNeeded: totalRamNeeded,
         serverRamNeeded: serverRamRequired,
       });
@@ -62,6 +74,21 @@ export async function recordServerHGWCalculationsUsingFormulas(
     }
     await safeWriteServerFile(ns, server, serverHGWData);
   }
+}
+
+export function removeInefficientHGWEntries(ns: NS, inputArray: any[]) {
+  const reducedList = [];
+
+  for (let i = 0; i < inputArray.length - 1; i++) {
+    const target = inputArray[i];
+    const nextTarget = inputArray[i + 1];
+    if (target.serverRamNeeded < nextTarget.serverRamNeeded) {
+      reducedList.push(target);
+    }
+  }
+  reducedList.push(inputArray[inputArray.length - 1]);
+
+  return reducedList;
 }
 
 export function calculateServerRamNeeded(ns: NS, rawRam: number) {

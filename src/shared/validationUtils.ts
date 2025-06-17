@@ -51,13 +51,9 @@ export function verifyVitalFiles(ns: NS) {
     'ColourPalette.txt',
   ];
   for (const file of vitalFileList) {
-    if (!fileExists(ns, path + file, 'home'))
-      return ns.print(
-        `ERROR ${
-          path + vitalFileList
-        } does not exist, sugest running app/config/ConfigWizard.js or app/config/configColourPalette.js`,
-      );
+    if (!fileExists(ns, path + file, 'home')) return false;
   }
+  return true;
 }
 
 export function isValidPriorityPortStructure(data: unknown): data is any[][] {

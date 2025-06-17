@@ -13,6 +13,7 @@ import { NS } from '@ns';
 
 export async function main(ns: NS) {
   await initialiseTailWindow(ns);
+  //ns.ui.closeTail();
 
   const file = '/data/locks/HacknetDatabaseLock.txt';
   if (fileExists(ns, file, 'home')) ns.rm(file, 'home');

@@ -1,4 +1,3 @@
-import { crimes } from '@/shared/globalVariables';
 import { NS, CrimeType } from '@ns';
 
 export function commitCrime(ns: NS, crimeChoice: string) {

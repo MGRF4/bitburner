@@ -27,14 +27,14 @@ export async function initialisePorts(ns: NS) {
       if (isValidPriorityPortStructure(data)) {
         //ns.tprint(`Port ${i} is valid!`);
       } else {
-        ns.tprint(`Port ${i} is INVALID or not initialized properly.`);
+        //ns.tprint(`Port ${i} is INVALID or not initialized properly.`);
         writePortSafely(ns, i, write);
       }
     } else if (i === 2 || i === 4) {
       if (isValidSingleArrayPortStructure(data)) {
         //ns.tprint('Port 2 is valid: contains a single array.');
       } else {
-        ns.tprint(`Port ${i} is invalid: does not contain a single array.`);
+        //ns.tprint(`Port ${i} is invalid: does not contain a single array.`);
         writePortSafely(ns, i, write);
       }
     }
@@ -47,7 +47,7 @@ export async function initialisePorts(ns: NS) {
 export function lockPort(ns: NS, portNumber: number): boolean {
   const lockFile = '/data/locks/Port-' + portNumber + '-Lock.txt';
   if (ns.fileExists(lockFile, 'home')) return false;
-  ns.write(lockFile, 'locked', 'w');
+  ns.write(lockFile, ns.getScriptName(), 'w');
   return true;
 }
 

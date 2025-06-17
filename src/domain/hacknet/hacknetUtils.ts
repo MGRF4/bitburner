@@ -268,10 +268,6 @@ export function checkUpgradeStatus(ns: NS, costModifier: number, phase: any, nod
   return false;
 }
 
-function nodeExists(index: number) {
-  return index - 1;
-}
-
 function convertToHashes(input: number) {
   return input / 250000;
 }
@@ -286,7 +282,7 @@ async function waitForHacknetDatabaseUnlock(ns: NS) {
 function lockHacknetDatabase(ns: NS) {
   const file = '/data/locks/HacknetDatabaseLock.txt';
   if (!fileExists(ns, file, 'home')) {
-    ns.write(file, 'lock', 'w');
+    ns.write(file, ns.getScriptName(), 'w');
   }
 }
 
@@ -298,7 +294,7 @@ function unlockHacknetDatabase(ns: NS) {
 }
 
 export async function safeWriteToHacknetDatabase(ns: NS, nodeData: HacknetNodeData[]) {
-  const file = '/data/locks/HacknetDatabase.txt';
+  const file = '/data/hacknet/HacknetDatabase.txt';
   await waitForHacknetDatabaseUnlock(ns);
   lockHacknetDatabase(ns);
   ns.write(file, JSON.stringify(nodeData), 'w');
@@ -306,7 +302,7 @@ export async function safeWriteToHacknetDatabase(ns: NS, nodeData: HacknetNodeDa
 }
 
 export async function safeGetHacknetDatabase(ns: NS) {
-  const file = '/data/locks/HacknetDatabase.txt';
+  const file = '/data/hacknet/HacknetDatabase.txt';
   await waitForHacknetDatabaseUnlock(ns);
   lockHacknetDatabase(ns);
   const raw = ns.read(file);

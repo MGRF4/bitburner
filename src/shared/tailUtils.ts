@@ -1,6 +1,7 @@
 import { initialisePorts } from '@/infra/portUtils';
 import { NS } from '@ns';
 import { verifyVitalFiles } from './validationUtils';
+import { applyFreeRamPercentage } from './ramUtils';
 
 export async function initialiseTailWindow(ns: NS, title?: string) {
   ns.disableLog('ALL');
@@ -9,6 +10,24 @@ export async function initialiseTailWindow(ns: NS, title?: string) {
   ns.ui.setTailFontSize(10);
   ns.clearLog();
   await initialisePorts(ns);
+}
+
+function checkNextPhase(ns: NS, script: string) {
+  const ram = ns.getScriptRam(script, 'home');
+  if (ns.getServerMaxRam('home') < ram) return ns.print('ERROR RAM FAILURE');
+}
+
+export async function phaseCompletionSequence(ns: NS, string: string, waitInMilliseconds: number, nextScript: string) {
+  ns.print('SUCCESS ' + string.toString());
+  ns.ui.renderTail();
+  await ns.sleep(waitInMilliseconds);
+  checkNextPhase(ns, nextScript);
+  ns.ui.closeTail();
+  ns.spawn(nextScript, { threads: 1, spawnDelay: 0 });
+}
+
+export function repositionWindow(ns: NS, xPos: number, yPos: number) {
+  ns.ui.moveTail(xPos, yPos);
 }
 
 export function resizeWindow(ns: NS, maxCharacterWidthSize: number, heightInPixels: number) {
