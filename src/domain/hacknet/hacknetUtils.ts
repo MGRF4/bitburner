@@ -94,8 +94,10 @@ export async function getHacknetNodeData(ns: NS, nodeData: HacknetNodeData[]) {
     n.totalHashes = s.totalProduction;
     n.nodeExpense = getNodeCost(ns, i);
     n.totalExpense = getNodeExpenses(ns, n);
-    n.moneyProfit = n.totalHashes - n.totalExpense;
-    n.hashProfit = convertToHashes(n.moneyProfit);
+    n.hashProfit = n.totalHashes - convertToHashes(n.totalExpense);
+    //n.hashProfit = convertToHashes(n.moneyProfit);
+    n.moneyProfit = convertToMoney(n.hashProfit);
+    //n.moneyProfit = convertToMoney(n.totalHashes) - n.totalExpense;
     n.usedRam = s.ramUsed as number;
     n.optimalUpgrade = getOptimalComponentUpgrade(ns, n);
     n.optimalUpgradeCost = getUpgradeCost(ns, n.optimalUpgrade, n);
@@ -145,7 +147,7 @@ export function getNodeExpenses(
   },
 ): number {
   return (
-    nodeData.levelExpense + nodeData.levelExpense + nodeData.ramExpense + nodeData.coreExpense + nodeData.nodeExpense
+    nodeData.levelExpense + nodeData.ramExpense + nodeData.coreExpense + nodeData.nodeExpense + nodeData.cacheExpense
   );
 }
 
@@ -270,6 +272,10 @@ export function checkUpgradeStatus(ns: NS, costModifier: number, phase: any, nod
 
 function convertToHashes(input: number) {
   return input / 250000;
+}
+
+function convertToMoney(input: number) {
+  return input * 250000;
 }
 
 async function waitForHacknetDatabaseUnlock(ns: NS) {

@@ -28,7 +28,7 @@ export async function main(ns: NS) {
   let pid = ns.run('/app/scanNetwork.js');
   while (ns.isRunning(pid)) await ns.sleep(10);
 
-  const scripts = ['/domain/hacking/weakenServer.js', '/domain/hacking/growServer.js', 'domain/hacking/hackServer.js'];
+  const scripts = ['/domain/hacking/weakenServer.js', '/domain/hacking/growServer.js', '/domain/hacking/hackServer.js'];
 
   // Main loop.
   while (true) {

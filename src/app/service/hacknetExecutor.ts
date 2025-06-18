@@ -43,8 +43,11 @@ export async function main(ns: NS) {
     let costMultiplier = 1;
 
     if (hacknetIncome >= earlyGameThreshold) {
-      phase = nodeData[nodeIterationCount].moneyProfit;
-      costMultiplier = (hacknetIncome * 0.1) / earlyGameThreshold;
+      phase =
+        (ns.getMoneySources().sinceInstall.hacknet - ns.getMoneySources().sinceInstall.hacknet_expenses) /
+        ns.hacknet.numNodes();
+      //phase = nodeData[nodeIterationCount].moneyProfit;
+      costMultiplier = (hacknetIncome * 0.1) / earlyGameThreshold + 1;
     }
     const node = nodeData[nodeIterationCount];
     if (nodeData[nodeIterationCount].name !== '') {
@@ -66,8 +69,11 @@ export async function main(ns: NS) {
     if (nodeIterationCount === ns.hacknet.numNodes()) {
       nodeIterationCount = 0;
     }
-    ns.print(node);
-    await ns.sleep(1000);
-    ns.clearLog();
+    if (nodeIterationCount === 0) {
+      ns.print(phase);
+      ns.print(costMultiplier);
+      await ns.sleep(1000);
+      ns.clearLog();
+    }
   }
 }

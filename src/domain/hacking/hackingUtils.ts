@@ -52,12 +52,16 @@ export async function recordServerHGWCalculationsUsingFormulas(
 
       // Calculate money per second..
       const moneyTaken = clone.moneyMax * (singleHackThreadPercent * hackThreads);
-      const hTime = ns.getHackTime(clone.hostname);
-      const gTime = ns.getGrowTime(clone.hostname);
-      const wTime = ns.getWeakenTime(clone.hostname);
+      const hTime = ns.formulas.hacking.hackTime(clone, player);
+      const gTime = ns.formulas.hacking.growTime(clone, player);
+      const wTime = ns.formulas.hacking.weakenTime(clone, player);
       const totalTime = hTime + gTime + wTime;
       const rawMoneyPerTime = moneyTaken / totalTime;
       const moneyPerSecond = Math.round(rawMoneyPerTime * 10000);
+
+      // Calculate cycles per batch.
+      const batchTime = wTime;
+      const cyclePerBatch = Math.floor(batchTime / 4);
 
       // Add info to serverHGWData.
       serverHGWData.push({
@@ -66,13 +70,16 @@ export async function recordServerHGWCalculationsUsingFormulas(
         growThreads: growThreads,
         weakenThreads: securityThreads,
         moneyPerSecond: moneyPerSecond,
+        batchTime: batchTime / 1000,
+        cyclesPerBatch: cyclePerBatch,
         ramNeeded: totalRamNeeded,
         serverRamNeeded: serverRamRequired,
       });
 
       extractionPercent += increment;
     }
-    await safeWriteServerFile(ns, server, serverHGWData);
+    const refinedServerHGWData = removeInefficientHGWEntries(ns, serverHGWData);
+    await safeWriteServerFile(ns, server, refinedServerHGWData);
   }
 }
 
