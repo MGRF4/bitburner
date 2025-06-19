@@ -1,5 +1,5 @@
 import { NS } from '@ns';
-import { fileExists } from './validationUtils';
+import { fileExists } from '../../shared/validationUtils';
 
 export function getOptimalHackingServer(ns: NS, serverList: string[]) {
   let bestServer = 'test';

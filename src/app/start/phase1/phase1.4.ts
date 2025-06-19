@@ -15,7 +15,7 @@ export async function main(ns: NS) {
   resizeWindow(ns, 30, 50);
   repositionWindow(ns, 1700, 0);
 
-  const script = 'domain/hacking/earlyHack.js';
+  const script = '/app/auxiliary/hacking/earlyHack.js';
   const scriptRam = ns.getScriptRam(script, 'home');
   const availableRam = ns.getServerMaxRam('home');
 

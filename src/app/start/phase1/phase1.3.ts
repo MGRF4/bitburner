@@ -16,7 +16,7 @@ export async function main(ns: NS) {
   resizeWindow(ns, 30, 50);
   repositionWindow(ns, 1700, 0);
 
-  const script = 'app/service/commitCrime.js';
+  const script = 'app/auxiliary/crime/commitCrime.js';
   const scriptRam = ns.getScriptRam(script, 'home');
   const availableRam = ns.getServerMaxRam('home');
 

@@ -52,3 +52,9 @@ export function getActualLineHeight(): number {
   document.body.removeChild(span);
   return height;
 }
+
+export function simpleUpdateTail(ns: NS, printString: string) {
+  //ns.clearLog();
+  ns.print(printString);
+  ns.print(' ');
+}

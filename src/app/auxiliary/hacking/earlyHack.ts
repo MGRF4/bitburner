@@ -13,7 +13,7 @@ import {
   attemptRootAccess,
   copyFilesToServer,
   decideHackGrowOrWeaken,
-} from '@/shared/hackUtils';
+} from '@/domain/hacking/hackUtils';
 import { formatNumberTemplate, formatStringTemplate } from '@/shared/stringUtils';
 import { initialiseTailWindow, repositionWindow, resizeWindow } from '@/shared/tailUtils';
 import { fileExists } from '@/shared/validationUtils';
@@ -22,13 +22,17 @@ import { NS } from '@ns';
 export async function main(ns: NS) {
   await initialiseTailWindow(ns, 'earlyHack');
 
-  resizeWindow(ns, 40, 225);
+  resizeWindow(ns, 45, 225);
   repositionWindow(ns, 1640, 950);
 
   let pid = ns.run('/app/scanNetwork.js');
   while (ns.isRunning(pid)) await ns.sleep(10);
 
-  const scripts = ['/domain/hacking/weakenServer.js', '/domain/hacking/growServer.js', '/domain/hacking/hackServer.js'];
+  const scripts = [
+    '/app/auxiliary/hacking/weakenServer.js',
+    '/app/auxiliary/hacking/growServer.js',
+    '/app/auxiliary/hacking/hackServer.js',
+  ];
 
   // Main loop.
   while (true) {
@@ -71,7 +75,6 @@ export async function main(ns: NS) {
           break;
 
         case 'hack':
-          break;
           const hackRam = ns.getScriptRam(scripts[2]);
           threads = Math.floor(serverRamAvailable / hackRam);
           if (threads > 0) {

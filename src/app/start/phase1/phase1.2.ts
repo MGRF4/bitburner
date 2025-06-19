@@ -15,7 +15,7 @@ export async function main(ns: NS) {
   resizeWindow(ns, 30, 50);
   repositionWindow(ns, 1700, 0);
 
-  let pid = ns.run('app/scanNetwork.js');
+  let pid = ns.run('app/auxiliary/serverList/scanNetwork.js');
   if (pid < 1) return ns.print('ERROR FAILURE');
   while (ns.isRunning(pid)) {
     await ns.sleep(10);
